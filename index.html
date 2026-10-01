@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aion 2 Meter</title>
+<meta name="description" content="Live DPS meter for AION 2. See your party's damage, every skill, the boss HP and its break gauge, right on top of the game.">
+<meta name="theme-color" content="#E5414B">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Aion 2 Meter">
+<meta property="og:title" content="Aion 2 Meter: live DPS meter for AION 2">
+<meta property="og:description" content="Party damage live, skill by skill breakdown, boss HP and break gauge overlay, fight history. Free, updates itself.">
+<meta property="og:url" content="https://hazakurauwu.github.io/aion2-meter-releases/">
+<meta property="og:image" content="https://hazakurauwu.github.io/aion2-meter-releases/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0d0e12; --panel: #15171d; --panel2: #1b1e26; --line: #262a35;
+    --text: #eef0f4; --dim: #9aa0ad; --faint: #6b7180;
+    --red: #e5414b; --red-hi: #ff6a72; --teal: #3fe0d0; --gold: #ffb347;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 Inter, "Segoe UI", system-ui, sans-serif; }
+  a { color: inherit; }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
+
+  /* top bar */
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; letter-spacing: .02em; }
+  .brand img { width: 30px; height: 30px; }
+  .top nav { display: flex; gap: 20px; font-size: 14px; color: var(--dim); }
+  .top nav a { text-decoration: none; }
+  .top nav a:hover { color: var(--text); }
+
+  /* hero */
+  body { background-image: radial-gradient(ellipse 900px 600px at 72% 260px, rgba(229,65,75,.18), transparent 70%),
+                           radial-gradient(ellipse 700px 500px at 10% 0, rgba(63,224,208,.07), transparent 70%);
+         background-repeat: no-repeat; }
+  .hero { padding-block: 56px 40px; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 48px; align-items: center; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--red-hi); }
+  .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--red); box-shadow: 0 0 10px var(--red); }
+  h1 { font-family: Cinzel, Georgia, serif; font-weight: 700; font-size: clamp(40px, 6vw, 64px); line-height: 1.05; margin: 14px 0 16px; text-wrap: balance; }
+  h1 span { color: var(--red); }
+  .lead { font-size: 18px; color: var(--dim); margin: 0 0 28px; max-width: 34em; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 10px; font-weight: 600;
+    text-decoration: none; transition: transform .15s, box-shadow .15s, background .15s; }
+  .btn-main { background: linear-gradient(180deg, #ef545d, #c9303a); color: #fff; box-shadow: 0 8px 28px rgba(229,65,75,.35); }
+  .btn-main:hover { transform: translateY(-1px); box-shadow: 0 10px 34px rgba(229,65,75,.5); }
+  .btn-ghost { border: 1px solid var(--line); color: var(--text); background: var(--panel); }
+  .btn-ghost:hover { border-color: #3a3f4d; }
+  .btn svg { width: 18px; height: 18px; }
+  .meta { margin-top: 14px; font-size: 13.5px; color: var(--faint); }
+  .hero-shot { position: relative; }
+  .hero-shot .meter { border-radius: 14px; box-shadow: 0 30px 80px rgba(0,0,0,.55); }
+  .hero-shot .boss { position: relative; width: 74%; margin: -26px 0 0 auto; border-radius: 12px; box-shadow: 0 24px 60px rgba(0,0,0,.6); }
+
+  /* trust strip */
+  .strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin-top: 72px; background: var(--line);
+    border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .strip div { background: var(--panel); padding: 18px 20px; }
+  .strip b { display: block; font-size: 15px; }
+  .strip span { font-size: 13.5px; color: var(--dim); }
+
+  /* features */
+  section { padding-block: 64px; }
+  h2 { font-family: Cinzel, Georgia, serif; font-size: clamp(28px, 3.6vw, 38px); margin: 0 0 10px; text-wrap: balance; }
+  .sub { color: var(--dim); margin: 0 0 36px; max-width: 40em; }
+  .feature { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 44px; align-items: center; padding-block: 28px; }
+  .feature.flip { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+  .feature.flip .copy { order: 2; }
+  .feature h3 { font-size: 22px; margin: 0 0 10px; }
+  .feature p { color: var(--dim); margin: 0 0 14px; }
+  .feature ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .feature li { position: relative; padding-left: 22px; font-size: 15px; }
+  .feature li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 8px; height: 8px; border-radius: 2px; background: var(--red); transform: rotate(45deg); }
+  .shot { border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+  .pair { display: grid; gap: 16px; }
+  .pair .ping { width: 46%; }
+
+  /* install */
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; counter-reset: s; }
+  .step { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
+  .step::before { counter-increment: s; content: counter(s); display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px;
+    background: rgba(229,65,75,.14); color: var(--red-hi); font-weight: 700; margin-bottom: 14px; }
+  .step h3 { margin: 0 0 6px; font-size: 17px; }
+  .step p { margin: 0; color: var(--dim); font-size: 14.5px; }
+  .step code { font: 13px/1.4 Consolas, monospace; background: var(--panel2); padding: 2px 6px; border-radius: 5px; color: var(--text); }
+  .note { margin-top: 18px; padding: 14px 18px; border-left: 3px solid var(--gold); background: rgba(255,179,71,.06); border-radius: 6px; color: var(--dim); font-size: 14.5px; }
+  .note b { color: var(--text); }
+
+  /* how */
+  .how { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 32px; }
+  .how p { color: var(--dim); margin: 0 0 12px; }
+  .nope { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
+  .nope h3 { margin: 0 0 12px; font-size: 16px; }
+  .nope li { list-style: none; position: relative; padding-left: 26px; margin-bottom: 8px; color: var(--dim); font-size: 14.5px; }
+  .nope ul { margin: 0; padding: 0; }
+  .nope li::before { content: "✕"; position: absolute; left: 0; color: var(--red); font-weight: 700; }
+
+  footer { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--faint); font-size: 13.5px;
+    display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; }
+
+  @media (max-width: 860px) {
+    .hero-grid, .feature, .feature.flip, .how { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .feature.flip .copy { order: 0; }
+    .hero-shot .boss { width: 92%; margin-right: 0; }
+    .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .steps { grid-template-columns: minmax(0, 1fr); }
+    .top nav { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#"><img src="img/icon.png" alt=""><span>Aion 2 Meter</span></a>
+    <nav><a href="#features">Features</a><a href="#install">Install</a><a href="#how">How it works</a>
+      <a href="https://github.com/Hazakurauwu/aion2-meter-releases/releases">Releases</a></nav>
+  </header>
+
+  <div class="hero">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Live DPS meter for AION 2</span>
+        <h1>See who's <span>carrying</span> the fight.</h1>
+        <p class="lead">Your whole party's damage, live, right on top of the game. Click anyone to see every skill they used,
+          watch the boss HP and break gauge, and look back at any fight later.</p>
+        <div class="cta">
+          <a class="btn btn-main" href="https://github.com/Hazakurauwu/aion2-meter-releases/releases/latest/download/Aion2Meter-win-Setup.exe">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>
+            Download for Windows</a>
+          <a class="btn btn-ghost" href="#install">How to install</a>
+        </div>
+        <p class="meta">Free · Windows 10 and 11 · Updates itself · English, Português, Español</p>
+      </div>
+      <div class="hero-shot">
+        <img class="meter" src="img/meter-active-dps.png" alt="The meter during a boss fight: six players with damage, damage share, DPS, crits, back attacks and more">
+        <img class="boss" src="img/overlay-hero.png" alt="Boss overlay with HP bar, break gauge and debuffs">
+      </div>
+    </div>
+
+    <div class="strip">
+      <div><b>Real time</b><span>Updates several times a second</span></div>
+      <div><b>Whole party</b><span>Everyone's damage, not just yours</span></div>
+      <div><b>Hands off the game</b><span>No files touched, nothing injected</span></div>
+      <div><b>Always current</b><span>New versions install themselves</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="features">
+  <section>
+    <h2>Everything a run needs</h2>
+    <p class="sub">Built for bosses and expeditions. Small and see-through over the game, detailed when you open it up.</p>
+
+    <div class="feature">
+      <div class="copy">
+        <h3>Party meter</h3>
+        <p>Every player ranked by damage, with their class, level, item level and combat power.</p>
+        <ul>
+          <li>Damage, share, DPS, crit, back attacks, perfect hits, heals</li>
+          <li>Pick the columns you want and how many players to show</li>
+          <li>Copy a summary to the chat with one click</li>
+        </ul>
+      </div>
+      <img class="shot" src="img/meter-active-dps.png" alt="Party meter" loading="lazy">
+    </div>
+
+    <div class="feature flip">
+      <div class="copy">
+        <h3>Every skill, every hit</h3>
+        <p>Click a player and see exactly where the damage came from.</p>
+        <ul>
+          <li>Damage per skill with min, average and max hit</li>
+          <li>Crit, back, perfect, double and multi hits per skill</li>
+          <li>Targets tab: who they hit and how much</li>
+        </ul>
+      </div>
+      <img class="shot" src="img/skills.png" alt="Skill breakdown of one player" loading="lazy">
+    </div>
+
+    <div class="feature">
+      <div class="copy">
+        <h3>Timeline</h3>
+        <p>Your rotation laid out across the fight, next to the boss HP.</p>
+        <ul>
+          <li>The opener: your first ten skills, to the tenth of a second</li>
+          <li>Buff uptime on you, bar by bar</li>
+          <li>Every cast of every skill on one line each</li>
+        </ul>
+      </div>
+      <img class="shot" src="img/skills-timeline.png" alt="Timeline with opener, buffs and casts" loading="lazy">
+    </div>
+
+    <div class="feature flip">
+      <div class="copy">
+        <h3>Overlays</h3>
+        <p>Separate little windows you can put anywhere, each with its own size and background.</p>
+        <ul>
+          <li>Boss frame with HP, break gauge and the time it stays down</li>
+          <li>Debuffs on the boss, yours marked in gold</li>
+          <li>Your buffs with time left, and your ping</li>
+        </ul>
+      </div>
+      <div class="pair">
+        <img class="shot" src="img/overlay-hero.png" alt="Boss overlay" loading="lazy">
+        <img class="shot ping" src="img/ping-overlay.png" alt="Ping overlay" loading="lazy">
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="copy">
+        <h3>Fight history</h3>
+        <p>Every fight is saved by place, so you can open it again later.</p>
+        <ul>
+          <li>Grouped by dungeon and expedition, kills marked</li>
+          <li>Search a player across all your fights</li>
+          <li>Open any old fight with the full breakdown</li>
+        </ul>
+      </div>
+      <img class="shot" src="img/history.png" alt="Fight history" loading="lazy">
+    </div>
+  </section>
+</div>
+
+<div class="wrap" id="install">
+  <section>
+    <h2>Install in two minutes</h2>
+    <p class="sub">No admin rights needed for the meter itself.</p>
+    <div class="steps">
+      <div class="step"><h3>Get Npcap</h3><p>Free, from <a href="https://npcap.com">npcap.com</a>. When the installer asks, tick <code>WinPcap API compatible Mode</code>.</p></div>
+      <div class="step"><h3>Run the installer</h3><p>Download <code>Aion2Meter-win-Setup.exe</code> above and open it. It installs and starts on its own.</p></div>
+      <div class="step"><h3>Open it before your character</h3><p>Start the meter before you pick your character so it catches everyone from the first pull.</p></div>
+    </div>
+    <p class="note"><b>Windows SmartScreen</b> may warn you the first time because the installer isn't signed yet. Click <b>More info</b>, then <b>Run anyway</b>.</p>
+  </section>
+</div>
+
+<div class="wrap" id="how">
+  <section>
+    <h2>How it works</h2>
+    <div class="how">
+      <div>
+        <p>AION 2 has no official API, and you don't need one. During a fight the game server keeps telling your PC what's happening:
+          who hit who, how hard, crits, boss HP, buffs, deaths.</p>
+        <p>The meter just reads that traffic as it arrives and adds it all up. That's why it needs Npcap, the thing that lets it see the traffic.
+          Pretty much every meter in every MMO works like this.</p>
+        <p>Updates download in the background and install when you close the meter. Want them now? Right click the tray icon and hit <b>Restart to update</b>.</p>
+      </div>
+      <div class="nope">
+        <h3>What it never does</h3>
+        <ul>
+          <li>Touch the game files or the game client</li>
+          <li>Read the game's memory or inject anything</li>
+          <li>Send anything to the game server</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Aion 2 Meter · not affiliated with NCSOFT</span>
+    <a href="https://github.com/Hazakurauwu/aion2-meter-releases/releases">All releases</a>
+  </footer>
+</div>
+</body>
+</html>
