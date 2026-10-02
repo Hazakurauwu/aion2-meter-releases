@@ -88,6 +88,10 @@
   .shot { border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
   .pair { display: grid; gap: 16px; }
   .pair .ping { width: 46%; }
+  .pair .side { width: 62%; justify-self: end; }
+  .tag-new { display: inline-block; margin-left: 10px; padding: 2px 9px; border-radius: 99px; font-size: 11.5px; font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase; vertical-align: 4px; color: #fff; background: var(--red); }
+  .feature .test { font-size: 13.5px; color: var(--dim); margin: 14px 0 0; }
 
   /* install */
   .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; counter-reset: s; }
@@ -212,6 +216,7 @@
           <li>Boss frame with HP, break gauge and the time it stays down</li>
           <li>Debuffs on the boss, yours marked in gold</li>
           <li>Your buffs with time left, and your ping</li>
+          <li>Over the game only: alt tab and they get out of the way</li>
         </ul>
       </div>
       <div class="pair">
@@ -231,6 +236,56 @@
         </ul>
       </div>
       <img class="shot" src="img/history.png" alt="Fight history" loading="lazy">
+    </div>
+
+    <div class="feature flip">
+      <div class="copy">
+        <h3>ACC: Aion Custom Cooldowns<span class="tag-new">New</span></h3>
+        <p>ACC stands for Aion Custom Cooldowns: your class's skills in a little bar, ready or the seconds until they're back.</p>
+        <ul>
+          <li>Pick the skills and their order, per class</li>
+          <li>Learns your real cooldowns from your casts, specialties included</li>
+          <li>A soft chime the moment a skill is ready</li>
+        </ul>
+        <p class="test">In the test version for now. Want it today? Settings &gt; Misc settings &gt; <b>Receive test versions</b>.</p>
+      </div>
+      <div class="pair">
+        <img class="shot" src="img/cooldowns-overlay.png" alt="Cooldowns overlay over the game" loading="lazy">
+        <img class="shot side" src="img/cooldowns-picker.png" alt="Picking the skills and their order" loading="lazy">
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="copy">
+        <h3>Event reminders<span class="tag-new">New</span></h3>
+        <p>Never miss a rift again. A heads up over the game a few minutes before.</p>
+        <ul>
+          <li>Spacetime Rifts, daily and weekly resets, in your own time zone</li>
+          <li>Pick the events and how many minutes before</li>
+          <li>Windows notification when you're in another program</li>
+          <li>A test button so you see and hear it before the real thing</li>
+        </ul>
+        <p class="test">In the test version for now. Want it today? Settings &gt; Misc settings &gt; <b>Receive test versions</b>.</p>
+      </div>
+      <div class="pair">
+        <img class="shot" src="img/event-soon.png" alt="Event reminder over the game" loading="lazy">
+        <img class="shot" src="img/settings-events.png" alt="Event reminder settings with the next times" loading="lazy">
+      </div>
+    </div>
+
+    <div class="feature flip">
+      <div class="copy">
+        <h3>Updates you can undo<span class="tag-new">New</span></h3>
+        <p>Every update keeps a copy of the version you had. New one acting up? Go back in one click.</p>
+        <ul>
+          <li>The meter tells you right after it updates, with the button right there</li>
+          <li>Also in the tray menu and in Settings &gt; Misc settings</li>
+          <li>Your settings and saved fights stay as they are</li>
+          <li>The bad version is skipped until a newer one comes out</li>
+        </ul>
+        <p class="test">In the test version for now. Want it today? Settings &gt; Misc settings &gt; <b>Receive test versions</b>.</p>
+      </div>
+      <img class="shot" src="img/meter-update-notice.png" alt="The notice after an update with the go back button" loading="lazy">
     </div>
   </section>
 </div>
@@ -257,7 +312,8 @@
           who hit who, how hard, crits, boss HP, buffs, deaths.</p>
         <p>The meter just reads that traffic as it arrives and adds it all up. That's why it needs Npcap, the thing that lets it see the traffic.
           Pretty much every meter in every MMO works like this.</p>
-        <p>Updates download in the background and install when you close the meter. Want them now? Right click the tray icon and hit <b>Restart to update</b>.</p>
+        <p>Updates download in the background and install when you close the meter. Want them now? Right click the tray icon and hit <b>Restart to update</b>.
+          A copy of the version you had is kept every time, so if a new one ever acts up you go back in one click.</p>
       </div>
       <div class="nope">
         <h3>What it never does</h3>
